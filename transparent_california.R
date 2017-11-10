@@ -205,9 +205,13 @@ rm(list = ls())
   colnames(all_together) <- c("City Name", "Average Pay", "Longitude", "Latitude")
   all_together <- all_together[, -c(5:7)]
   all_together
-  
-  
-  ca_map <- get_map(location = "California", zoom = 8, scale = 2)
-  ggmap(ca_map)
-  
+ 
+
+#Makes Maps
+cabox <- make_bbox(lon = all_together$Longitude, lat = all_together$Latitude, f = .1)
+
+ca_map <- get_map(location = cabox, maptype = "roadmap", source = "google")
+
+ggmap(ca_map) + geom_point(data = all_together, mapping = aes(x = Longitude, y = Latitude, size = Average Pay), color = "red")
+
   
