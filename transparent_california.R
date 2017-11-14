@@ -77,88 +77,99 @@ cse = function(reg) {
 # Note, albany data available for 2011-2016
 # many other cities, counties, agencies available
 
-san_jose_2016 <- read.csv("http://transparentcalifornia.com/export/san-jose-2016.csv")
-s_san_fran_2016 <- read.csv("http://transparentcalifornia.com/export/south-san-francisco-2016.csv")
-sausalito_2016 <- read.csv("http://transparentcalifornia.com/export/sausalito-2016.csv")
-san_diego_2016 <- read.csv("http://transparentcalifornia.com/export/san-diego-2016.csv")
-los_angeles_2016 <- read.csv("http://transparentcalifornia.com/export/los-angeles-2016.csv")
-sacramento_2016 <- read.csv("http://transparentcalifornia.com/export/sacramento-2016.csv")
-oakland_2016 <- read.csv("http://transparentcalifornia.com/export/oakland-2016.csv")
-los_gatos_2016 <- read.csv("http://transparentcalifornia.com/export/los-gatos-2016.csv")
-beverly_hills_2016 <- read.csv("http://transparentcalifornia.com/export/beverly-hills-2016.csv")
-
-#Average SJ base pay over $75k
-san_jose_2016$basepay = tolower(san_jose_2016$Base.Pay)
-sj75 <- san_jose_2016$basepay[san_jose_2016$Base.Pay > 75000]
-sj75 <- as.numeric(sj75)
-sj75 <- matrix(data = sj75, ncol = 1)
-sj_avg <- mean(sj75)
-
-#Average S. San Francisco base pay over $75k
-s_san_fran_2016$basepay = tolower(s_san_fran_2016$Base.Pay)
-sf75 <- s_san_fran_2016$basepay[s_san_fran_2016$Base.Pay >75000]
-sf75 <- as.numeric(sf75)
-sf75 <- matrix(data = sf75, ncol=1)
-sf_avg <- mean(sf75)
-
-#Average Sausalito base pay over $75k
-sausalito_2016$basepay = tolower(sausalito_2016$Base.Pay)
-saus75 <- sausalito_2016$basepay[sausalito_2016$Base.Pay >75000]
-saus75 <- as.numeric(saus75)
-saus75 <- matrix(data = saus75, ncol = 1)
-saus_avg <- mean(saus75)
-
-#Average San Diego base pay over $75k
-san_diego_2016$basepay = tolower(san_diego_2016$Base.Pay)
-sd75 <- san_diego_2016$basepay[san_diego_2016$Base.Pay > 75000]
-sd75 <- as.numeric(sd75)
-sd75 <- matrix(data = sd75, ncol = 1)
-sd_avg <- mean(sd75)
-
-#Average Los Angeles base pay over $75k
-los_angeles_2016$basepay = tolower(los_angeles_2016$Base.Pay)
-la75 <- los_angeles_2016$basepay[los_angeles_2016$Base.Pay > 75000]
-la75 <- as.numeric(la75)
-la75 <- matrix(data = la75, ncol = 1)
-la_avg <- mean(la75)
-
-#Average Sacramento base pay over $75k
-sacramento_2016$basepay = tolower(sacramento_2016$Base.Pay)
-sac75 <- sacramento_2016$basepay[sacramento_2016$Base.Pay > 75000]
-sac75 <- as.numeric(sac75)
-sac75 <- matrix(data = sac75, ncol = 1)
-sac_avg <- mean(sac75)
-
-#Average Oakland base pay over $75k
-oakland_2016$basepay = tolower(oakland_2016$Base.Pay)
-oak75 <- oakland_2016$basepay[oakland_2016$Base.Pay > 75000]
-oak75 <- as.numeric(oak75)
-oak75 <- matrix(data = oak75, ncol = 1)
-oak_avg <- mean(oak75)
-
-#Average Los Gatos base pay over $75k
-los_gatos_2016$basepay = tolower(los_gatos_2016$Base.Pay)
-lg75 <- los_gatos_2016$basepay[los_gatos_2016$Base.Pay > 75000]
-lg75 <- as.numeric(lg75)
-lg75 <- matrix(data = lg75, ncol = 1)
-lg_avg <- mean(lg75)
-
-#Average Beverly Hills base pay over $75k
-beverly_hills_2016$basepay = tolower(beverly_hills_2016$Base.Pay)
-bh75 <- beverly_hills_2016$basepay[beverly_hills_2016$Base.Pay >75000]
-bh75 <- as.numeric(bh75)
-bh75 <- matrix(data = bh75, ncol = 1)
-bh_avg <- mean(bh75)
-
-sj_avg
-sf_avg
-saus_avg
-sd_avg
-la_avg
-sac_avg
-oak_avg
-lg_avg
-bh_avg
+ # Data input using read.csv
+  sonoma_c <- read.csv("http://transparentcalifornia.com/export/sonoma-county-2016.csv")
+  napa_c <- read.csv("http://transparentcalifornia.com/export/napa-county-2016.csv")
+  solano_c <- read.csv("http://transparentcalifornia.com/export/solano-county-2016.csv")
+  marin_c <- read.csv("http://transparentcalifornia.com/export/marin-county-2016.csv")
+  contra_costa_c <- read.csv("http://transparentcalifornia.com/export/contra-costa-county-2016.csv")
+  san_fran_c <- read.csv("https://transparentcalifornia.com/export/san-francisco-2016.csv")
+  san_mateo_c <- read.csv("http://transparentcalifornia.com/export/san-mateo-county-2016.csv")
+  santa_cruz_c <- read.csv("http://transparentcalifornia.com/export/santa-cruz-county-2016.csv")
+  santa_clara_c <- read.csv("http://transparentcalifornia.com/export/santa-clara-county-2016.csv")
+  alameda_c <- read.csv("http://transparentcalifornia.com/export/alameda-county-2016.csv")
+  
+  
+  #Average Sonoma County base pay over $75k
+  sonoma_c$basepay = tolower(sonoma_c$Base.Pay)
+  son75 <- sonoma_c$basepay[sonoma_c$Base.Pay > 75000]
+  son75 <- as.numeric(son75)
+  son75 <- matrix(data = son75, ncol = 1)
+  son_avg <- mean(son75)
+  
+  #Average Napa County base pay over $75k
+  napa_c$basepay = tolower(napa_c$Base.Pay)
+  napa75 <- napa_c$basepay[napa_c$Base.Pay >75000]
+  napa75 <- as.numeric(napa75)
+  napa75 <- matrix(data = napa75, ncol=1)
+  napa_avg <- mean(napa75)
+  
+  #Average Solano County base pay over $75k
+  solano_c$basepay = tolower(solano_c$Base.Pay)
+  solano75 <- solano_c$basepay[solano_c$Base.Pay >75000]
+  solano75 <- as.numeric(solano75)
+  solano75 <- matrix(data = solano75, ncol = 1)
+  solano_avg <- mean(solano75)
+  
+  #Average Marin base pay over $75k
+  marin_c$basepay = tolower(marin_c$Base.Pay)
+  marin75 <- marin_c$basepay[marin_c$Base.Pay > 75000]
+  marin75 <- as.numeric(marin75)
+  marin75 <- matrix(data = marin75, ncol = 1)
+  marin_avg <- mean(marin75)
+  
+  #Average Contra Costa County base pay over $75k
+  contra_costa_c$basepay = tolower(contra_costa_c$Base.Pay)
+  cc75 <- contra_costa_c$basepay[contra_costa_c$Base.Pay > 75000]
+  cc75 <- as.numeric(cc75)
+  cc75 <- matrix(data = cc75, ncol = 1)
+  cc_avg <- mean(cc75)
+  
+  #Average San Francisco County base pay over $75k
+  san_fran_c$basepay = tolower(san_fran_c$Base.Pay)
+  sf75 <- san_fran_c$basepay[san_fran_c$Base.Pay > 75000]
+  sf75 <- as.numeric(sf75)
+  sf75 <- matrix(data = sf75, ncol = 1)
+  sf_avg <- mean(sf75)
+  
+  #Average San Mateo County base pay over $75k
+  san_mateo_c$basepay = tolower(san_mateo_c$Base.Pay)
+  san_mateo75 <- san_mateo_c$basepay[san_mateo_c$Base.Pay > 75000]
+  san_mateo75 <- as.numeric(san_mateo75)
+  san_mateo75 <- matrix(data = san_mateo75, ncol = 1)
+  san_mateo_avg <- mean(san_mateo75)
+  
+  #Average Santa Cruz County base pay over $75k
+  santa_cruz_c$basepay = tolower(santa_cruz_c$Base.Pay)
+  cruz75 <- santa_cruz_c$basepay[santa_cruz_c$Base.Pay > 75000]
+  cruz75 <- as.numeric(cruz75)
+  cruz75 <- matrix(data = cruz75, ncol = 1)
+  cruz_avg <- mean(cruz75)
+  
+  #Average Santa Clara County base pay over $75k
+  santa_clara_c$basepay = tolower(santa_clara_c$Base.Pay)
+  clara75 <- santa_clara_c$basepay[santa_clara_c$Base.Pay >75000]
+  clara75 <- as.numeric(clara75)
+  clara75 <- matrix(data = clara75, ncol = 1)
+  clara_avg <- mean(clara75)
+ 
+  #Average Alameda County base pay over $75k
+  alameda_c$basepay = tolower(alameda_c$Base.Pay)
+  alameda75 <- alameda_c$basepay[alameda_c$Base.Pay > 75000]
+  alameda75 <- as.numeric(alameda75)
+  alameda75 <- matrix(data = alameda75, ncol = 1)
+  alameda_avg <- mean(alameda75)
+  
+  son_avg
+  napa_avg
+  solano_avg
+  marin_avg
+  cc_avg
+  sf_avg
+  san_mateo_avg
+  cruz_avg
+  clara_avg
+  alameda_avg
 
 
   geom_polygon(color = "black", fill = NA)  # get the state border back on top
