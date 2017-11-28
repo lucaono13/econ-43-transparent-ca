@@ -203,22 +203,22 @@ ggmap(ca_map) +
                    label.padding = unit(.15, "lines"),
                    segment.color = "red", segment.size = 1)
 
- counties <- c("Sonoma County","Napa County", "Solano County", "Marin County", "Contra Costa County", "San Francisco", "San Mateo County", "Santa Cruz County","Santa Clara County", "Alameda County")
+   counties <- c("Napa County", "Solano County", "Marin County", "Contra Costa County", "San Francisco", "San Mateo County", "Santa Cruz County","Santa Clara County", "Alameda County")
   geocode(counties)
   
   #Inserts values into separate Data Frames (each data frame is one column)
-  county_avg <- as.data.frame(c(son_avg, napa_avg, solano_avg, marin_avg, cc_avg, sf_avg, san_mateo_avg, cruz_avg, clara_avg))
+  county_avg <- as.data.frame(c( napa_avg, solano_avg, marin_avg, cc_avg, sf_avg, san_mateo_avg, cruz_avg, clara_avg))
   county_names <- as.data.frame(counties)
   county_locs <- as.data.frame(geocode(counties))
   
   #Merge data frames horizontally
-  all_together <- as.data.frame(c(county_names, county_avg, county_locs))
+  all_together <- as.data.frame(c(county_names, county_locs))
 
   #Rename the columns
   colnames(all_together) <- c("County Name", "AveragePay", "Longitude", "Latitude")
   all_together <- all_together[, -c(5:7)]
   all_together
-  
+
   #makes Maps
   cabox <- make_bbox(lon = all_together$Longitude, lat = all_together$Latitude, f = .1)
   
