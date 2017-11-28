@@ -13,71 +13,66 @@
 #   1. Settings, packages, and options
 #==============================================================================
 
-# Clear the working space
-rm(list = ls())
+  # Clear the working space
+  rm(list = ls())
+  
+  # Set working directory
+  #setwd("/Users/wsundstrom/econ_42/data")
+  #or 
+  #setwd("C:/Users/wsundstrom/econ_42/data")
 
-# Set working directory
-#setwd("/Users/wsundstrom/econ_42/data")
-#or 
-#setwd("C:/Users/wsundstrom/econ_42/data")
+  # Load useful packages 
 
-# Load useful packages 
 
-# Clear the working space
-rm(list = ls())
 
 #install.packages("viridis", "raster", "ggmap", "mapproj", "maps", "maptools", "mapdata", "sp", "ggplot2", "dplyr")
 
 #install.packages(c("maps", "mapdata"))
 #install.packages("dplyr")
 #install.packages("reshape")
-install.packages("ggrepel")
-
 
 
 # Load packages
-library(plyr)
-library(sp) 
-library(raster)
-library(viridis)
-library(leaflet)
-library(doBy)
-library(dplyr)
-library(foreign)
-library(gdata)
-library(ggplot2)
-library(sandwich)
-library(stargazer)
-library(tidyr)
-library(maps)
-library(mapdata)
-library(mapproj)
-library(maptools)
-library(ggmap)
-library(reshape2)
-library(reshape)
-library(ggrepel)
+  library(plyr)
+  library(sp) 
+  library(raster)
+  library(viridis)
+  library(leaflet)
+  library(doBy)
+  library(dplyr)
+  library(foreign)
+  library(gdata)
+  library(ggplot2)
+  library(sandwich)
+  library(stargazer)
+  library(tidyr)
+  library(maps)
+  library(mapdata)
+  library(mapproj)
+  library(maptools)
+  library(ggmap)
+  library(reshape2)
+  library(reshape)
 
-
-# turn off scientific notation except for big numbers
-options(scipen = 9)
-# function to calculate corrected SEs for regression 
-cse = function(reg) {
-  rob = sqrt(diag(vcovHC(reg, type = "HC1")))
-  return(rob)
-}
+  # turn off scientific notation except for big numbers
+  options(scipen = 9)
+  # function to calculate corrected SEs for regression 
+  cse = function(reg) {
+    rob = sqrt(diag(vcovHC(reg, type = "HC1")))
+    return(rob)
+  }
 
 #==============================================================================
 #   2. Data section
 #==============================================================================
 
 ### Read data 
-
-# Data input using read.csv
-# Note, albany data available for 2011-2016
-# many other cities, counties, agencies available
-
- # Data input using read.csv
+  
+  california <- subset(states, region %in% "California")
+  ggplot(data = california) +
+    geom_polygon(aes(x = long, y = lat), fill = "palegreen", color = "black") 
+    
+  # Data input using read.csv
   sonoma_c <- read.csv("http://transparentcalifornia.com/export/sonoma-county-2016.csv")
   napa_c <- read.csv("http://transparentcalifornia.com/export/napa-county-2016.csv")
   solano_c <- read.csv("http://transparentcalifornia.com/export/solano-county-2016.csv")
@@ -127,8 +122,13 @@ cse = function(reg) {
   
   #Average San Francisco County base pay over $75k
   san_fran_c$basepay = tolower(san_fran_c$Base.Pay)
-  sf75 <- san_fran_c$basepay[san_fran_c$Base.Pay > 75000]
+  sf75 <- san_fran_c$Base.Pay
   sf75 <- as.numeric(sf75)
+  sf75 <- subset(sf75, sf75 > 75000)
+  #sf75 <- sf75[sf75 > 75000]
+  #sf75 <- san_fran_c$Base.Pay > 75000
+  #sf75 <- san_fran_c$basepay[san_fran_c$Base.Pay > 75000]
+  #sf75 <- as.numeric(sf75)
   sf75 <- matrix(data = sf75, ncol = 1)
   sf_avg <- mean(sf75)
   
@@ -170,60 +170,51 @@ cse = function(reg) {
   cruz_avg
   clara_avg
   alameda_avg
+  
 
 
-  geom_polygon(color = "black", fill = NA)  # get the state border back on top
+  #loads data for states
+  states <- map_data("state")
+  dim(states)
+  
+  head(states)
+  
+  tail(states)
+  
+  #zooms in on California
+  ca_df <- subset(states, region == "california")
+  
+  head(ca_df)
+  
+  #gets counties
+  counties <- map_data("county")
+  ca_county <- subset(counties, region == "california")
+  
+  head(ca_county)
+  
+  ca_base <- ggplot(data = ca_df, mapping = aes(x = long, y = lat, group = group)) + 
+    coord_fixed(1.3) + 
+    geom_polygon(color = "black", fill = "gray")
+  ca_base + theme_nothing()
+  
+  ca_base + theme_nothing() + 
+    geom_polygon(data = ca_county, fill = NA, color = "white") +
+    geom_polygon(color = "black", fill = NA)  # get the state border back on top
 
-cities <- c("SAN JOSE","Sausalito", "San Diego", "Los Angeles", "Sacramento", "Oakland", "Los Gatos", "Beverly Hills","S. San Francisco")
-geocode(cities)
-
-#Inserts values into separate Data Frames (each data frame is one column)
-city_avg <- as.data.frame(c(sj_avg, sf_avg, saus_avg, sd_avg, la_avg, sac_avg, oak_avg, lg_avg, bh_avg))
-city_names <- as.data.frame(cities)
-city_locs <- as.data.frame(geocode(cities))
-
-#Merge data frames horizontally
-all_together <- as.data.frame(c(city_names, city_avg, city_locs))
-
-#Rename the columns
-colnames(all_together) <- c("CityName", "AveragePay", "Longitude", "Latitude")
-all_together <- all_together[, -c(5:7)]
-all_together
-
-
-#Makes Maps
-baybox <- make_bbox(lon = all_together$Longitude, lat = all_together$Latitude, f = .1)
-
-ca_map <- get_map(location = baybox, maptype = "roadmap", source = "google")
-
-ggmap(ca_map) + 
-  geom_point(data = all_together, mapping = aes(x = Longitude, y = Latitude, size = AveragePay), color = "red")  +   labs(x = 'Longitude', y = 'Latitude') +
-  geom_label_repel(data = all_together, aes(x = Longitude, y = Latitude, label = CityName), 
-                   fill = "white", box.padding = unit(.4, "lines"),
-                   label.padding = unit(.15, "lines"),
-                   segment.color = "red", segment.size = 1)
-
-   counties <- c("Napa County", "Solano County", "Marin County", "Contra Costa County", "San Francisco", "San Mateo County", "Santa Cruz County","Santa Clara County", "Alameda County")
-  geocode(counties)
+  counties_1 <- c("Napa County", "Solano County", "Marin County", "Contra Costa County", "San Francisco", "San Mateo County")
+  counties_2 <- c("Santa Cruz County","Santa Clara County", "Alameda County")
+  geocode(counties_1)
+  geocode(counties_2)
   
   #Inserts values into separate Data Frames (each data frame is one column)
-  county_avg <- as.data.frame(c( napa_avg, solano_avg, marin_avg, cc_avg, sf_avg, san_mateo_avg, cruz_avg, clara_avg))
-  county_names <- as.data.frame(counties)
-  county_locs <- as.data.frame(geocode(counties))
+  county_avg <- as.data.frame(c( napa_avg, solano_avg, marin_avg, cc_avg, sf_avg, san_mateo_avg, cruz_avg, clara_avg, alameda_avg))
+  county_names <- as.data.frame(c(counties_1, counties_2))
+  county_locs <- as.data.frame(c(geocode(counties_1), geocode(counties_2)))
   
   #Merge data frames horizontally
-  all_together <- as.data.frame(c(county_names, county_locs))
+  all_together <- as.data.frame(c( county_names, county_avg))
 
   #Rename the columns
   colnames(all_together) <- c("County Name", "AveragePay", "Longitude", "Latitude")
   all_together <- all_together[, -c(5:7)]
   all_together
-
-  #makes Maps
-  cabox <- make_bbox(lon = all_together$Longitude, lat = all_together$Latitude, f = .1)
-  
-  ca_map <- get_map(location = cabox, maptype = "roadmap", source = "google")
-   
-  ggmap(ca_map) + geom_point(data = all_together, mapping = aes(x = Longitude, y = Latitude, size = (AveragePay) ) +
-    scale_color_gradient(low = "#FF0000", high = "#00FF00")
-  
