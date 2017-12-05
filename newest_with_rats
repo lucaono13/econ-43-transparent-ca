@@ -1,0 +1,215 @@
+#==============================================================================
+#   Transparent California
+#==============================================================================
+
+# original by Michael Kevane 10/14/2017
+# editied by Gianluca, Jeffery, & Jonathan
+
+# Description: Create tables of descriptive statistics for 
+# Salary data for public employees in California
+# data is from http://transparentcalifornia.com
+
+#==============================================================================
+#   1. Settings, packages, and options
+#==============================================================================
+
+# Clear the working space
+rm(list = ls())
+
+#install.packages("viridis", "raster", "ggmap", "mapproj", "maps", "maptools", "mapdata", "sp", "ggplot2", "dplyr")
+
+#install.packages(c("maps", "mapdata"))
+#install.packages("dplyr")
+#install.packages("reshape")
+#install.packages("ggrepel")
+#install.packages("noncensus")
+
+
+# Load packages
+library(plyr)
+library(sp) 
+library(raster)
+library(viridis)
+library(leaflet)
+library(doBy)
+library(dplyr)
+library(foreign)
+library(gdata)
+library(ggplot2)
+library(sandwich)
+library(stargazer)
+library(tidyr)
+library(maps)
+library(mapdata)
+library(mapproj)
+library(maptools)
+library(ggmap)
+library(reshape2)
+library(reshape)
+library(ggrepel)
+library(noncensus)
+
+
+# turn off scientific notation except for big numbers
+options(scipen = 9)
+# function to calculate corrected SEs for regression 
+cse = function(reg) {
+  rob = sqrt(diag(vcovHC(reg, type = "HC1")))
+  return(rob)
+}
+
+#==============================================================================
+#   2. Data section
+#==============================================================================
+
+### Read data 
+
+# Data input using read.csv
+# Note, albany data available for 2011-2016
+# many other cities, counties, agencies available
+
+# Data input using read.csv
+sonoma_c <- read.csv("http://transparentcalifornia.com/export/sonoma-county-2016.csv")
+napa_c <- read.csv("http://transparentcalifornia.com/export/napa-county-2016.csv")
+solano_c <- read.csv("http://transparentcalifornia.com/export/solano-county-2016.csv")
+marin_c <- read.csv("http://transparentcalifornia.com/export/marin-county-2016.csv")
+contra_costa_c <- read.csv("http://transparentcalifornia.com/export/contra-costa-county-2016.csv")
+san_fran_c <- read.csv("https://transparentcalifornia.com/export/san-francisco-2016.csv")
+san_mateo_c <- read.csv("http://transparentcalifornia.com/export/san-mateo-county-2016.csv")
+santa_cruz_c <- read.csv("http://transparentcalifornia.com/export/santa-cruz-county-2016.csv")
+santa_clara_c <- read.csv("http://transparentcalifornia.com/export/santa-clara-county-2016.csv")
+alameda_c <- read.csv("http://transparentcalifornia.com/export/alameda-county-2016.csv")
+
+
+#Average Sonoma County base pay over $50k
+sonoma_c$basepay = tolower(sonoma_c$Total.Pay...Benefits)
+son50 <- sonoma_c$basepay[sonoma_c$Total.Pay...Benefits > 50000]
+son50 <- as.numeric(son50)
+son50 <- matrix(data = son50, ncol = 1)
+son_avg <- mean(son50)
+num_son <- nrow(son50)
+tot_son <- nrow(sonoma_c)
+
+#Average Napa County base pay over $50k
+napa_c$basepay = tolower(napa_c$Total.Pay...Benefits)
+napa50 <- napa_c$basepay[napa_c$Total.Pay...Benefits >50000]
+napa50 <- as.numeric(napa50)
+napa50 <- matrix(data = napa50, ncol=1)
+napa_avg <- mean(napa50)
+num_napa <- nrow(napa50)
+tot_napa <- nrow(napa_c)
+
+#Average Solano County base pay over $50k
+solano_c$basepay = tolower(solano_c$Total.Pay...Benefits)
+solano50 <- solano_c$basepay[solano_c$Total.Pay...Benefits >50000]
+solano50 <- as.numeric(solano50)
+solano50 <- matrix(data = solano50, ncol = 1)
+solano_avg <- mean(solano50)
+num_solano <- nrow(solano50)
+tot_solano <- nrow(solano_c)
+
+#Average Marin base pay over $50k
+marin_c$basepay = tolower(marin_c$Total.Pay...Benefits)
+marin50 <- marin_c$basepay[marin_c$Total.Pay...Benefits > 50000]
+marin50 <- as.numeric(marin50)
+marin50 <- matrix(data = marin50, ncol = 1)
+marin_avg <- mean(marin50)
+num_marin <- nrow(marin50)
+tot_marin <- nrow(marin_c)
+
+#Average Contra Costa County base pay over $50k
+contra_costa_c$basepay = tolower(contra_costa_c$Total.Pay...Benefits)
+cc50 <- contra_costa_c$basepay[contra_costa_c$Total.Pay...Benefits > 50000]
+cc50 <- as.numeric(cc50)
+cc50 <- matrix(data = cc50, ncol = 1)
+cc_avg <- mean(cc50)
+num_cc <- nrow(cc50)
+tot_cc <- nrow(contra_costa_c)
+
+#Average San Francisco County base pay over $50k
+san_fran_c$basepay = tolower(san_fran_c$Total.Pay...Benefits)
+sf50 <- san_fran_c$basepay[san_fran_c$Total.Pay...Benefits > 50000]
+sf50 <- as.numeric(sf50)
+sf50 <- matrix(data = sf50, ncol = 1)
+sf_avg <- mean(sf50)
+num_sf <- nrow(sf50)
+tot_sf <- nrow(san_fran_c)
+
+#Average San Mateo County base pay over $50k
+san_mateo_c$basepay = tolower(san_mateo_c$Total.Pay...Benefits)
+san_mateo50 <- san_mateo_c$basepay[san_mateo_c$Total.Pay...Benefits > 50000]
+san_mateo50 <- as.numeric(san_mateo50)
+san_mateo50 <- matrix(data = san_mateo50, ncol = 1)
+san_mateo_avg <- mean(san_mateo50)
+num_mateo <- nrow(san_mateo50)
+tot_mateo <- nrow(san_mateo_c)
+
+#Average Santa Cruz County base pay over $50k
+santa_cruz_c$basepay = tolower(santa_cruz_c$Total.Pay...Benefits)
+cruz50 <- santa_cruz_c$basepay[santa_cruz_c$Total.Pay...Benefits > 50000]
+cruz50 <- as.numeric(cruz50)
+cruz50 <- matrix(data = cruz50, ncol = 1)
+cruz_avg <- mean(cruz50)
+num_cruz <- nrow(cruz50)
+tot_cruz <- nrow(santa_cruz_c)
+
+#Average Santa Clara County base pay over $50k
+santa_clara_c$basepay = tolower(santa_clara_c$Total.Pay...Benefits)
+clara50 <- santa_clara_c$basepay[santa_clara_c$Total.Pay...Benefits >50000]
+clara50 <- as.numeric(clara50)
+clara50 <- matrix(data = clara50, ncol = 1)
+clara_avg <- mean(clara50)
+num_clara <- nrow(clara50)
+tot_clara <- nrow(santa_clara_c)
+
+#Average Alameda County base pay over $50k
+alameda_c$basepay = tolower(alameda_c$Total.Pay...Benefits)
+alameda50 <- alameda_c$basepay[alameda_c$Total.Pay...Benefits > 50000]
+alameda50 <- as.numeric(alameda50)
+alameda50 <- matrix(data = alameda50, ncol = 1)
+alameda_avg <- mean(alameda50)
+num_alam <- nrow(alameda50)
+tot_alam <- nrow(alameda_c)
+
+son_avg
+napa_avg
+solano_avg
+marin_avg
+cc_avg
+sf_avg
+san_mateo_avg
+cruz_avg
+clara_avg
+alameda_avg
+
+data(counties)
+counties
+sonoma_pop <-subset(counties, state == "CA" & county_name == "Sonoma County", select = c(county_name, population))
+napa_pop <- subset(counties, state == "CA" & county_name == "Napa County", select = c(county_name, population))
+solano_pop <-subset(counties, state == "CA" & county_name == "Solano County", select = c(county_name, population))
+marin_pop <- subset(counties, state =="CA" & county_name == "Marin County", select = c(county_name, population))
+cc_pop <- subset(counties, state =="CA" & county_name == "Contra Costa County", select = c(county_name, population))
+sf_pop <- subset(counties, state == "CA" & county_name=="San Francisco County", select = c(county_name, population))
+mateo_pop <- subset(counties, state == "CA" & county_name == "San Mateo County", select = c(county_name, population))
+cruz_pop <- subset(counties, state =="CA" & county_name == "Santa Cruz County", select = c(county_name, population))
+clara_pop <- subset(counties, state =="CA" & county_name == "Santa Clara County", select = c(county_name, population))
+alam_pop <- subset(counties, state == "CA" & county_name == "Alameda County", select = c(county_name, population))
+
+cities <- c("Sonoma","Napa", "Solano", "Marin", "Contra Costa", "San Francisco", "San Mateo", "Santa Cruz","Santa Clara","Alameda")
+geocode(cities)
+
+#Inserts values into separate Data Frames (each data frame is one column)
+city_rats <- c(num_son/tot_son, num_napa/tot_napa, num_solano/tot_solano, num_marin/tot_marin, 
+               num_cc/tot_cc, num_sf/tot_sf, num_mateo/tot_mateo, num_cruz/tot_cruz, 
+               num_clara/tot_clara, num_alam/tot_alam)
+city_rats <- as.data.frame(city_rats)
+city_names <- as.data.frame(cities)
+city_locs <- as.data.frame(geocode(cities))
+
+#Merge data frames horizontally
+all_together <- as.data.frame(c(city_names, city_rats, city_locs))
+
+#Rename the columns
+colnames(all_together) <- c("CityName", "AveragePay", "Longitude", "Latitude")
+all_together <- all_together[, -c(5:7)]
+all_together
