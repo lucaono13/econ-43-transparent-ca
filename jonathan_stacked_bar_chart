@@ -1,0 +1,15 @@
+#Stacked Bar Chart -- graph shows up, but bar does not show bar
+ggplot(data = all_together, aes(x = AveragePay,  fill = factor(AveragePay))) + 
+  geom_bar() + coord_flip()                
+
+#Distribution of average pay                   
+averagesalary <- ggplot(all_together, aes(x=AveragePay)) + 
+  geom_histogram(binwidth = .005, color="dark red",fill="red") 
+print(averagesalary + ggtitle("Distribution of Average Pay"))
+
+#Scatter Plot of avg pay vs. cities
+p <- ggplot(data=all_together, aes(x=CityName, y=AveragePay)) +
+  geom_point(
+    color="dark blue", fill="blue", shape=21,alpha=0.5, size=3,stroke = 2) + 
+  labs(title = "Average Pay", x="Cities", y="Average Salary")
+p + theme(axis.text.x = element_text(angle = 60, hjust = 1))
