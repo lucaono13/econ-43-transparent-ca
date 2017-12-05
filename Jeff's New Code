@@ -85,6 +85,7 @@ son75 <- sonoma_c$basepay[sonoma_c$Base.Pay > 75000]
 son75 <- as.numeric(son75)
 son75 <- matrix(data = son75, ncol = 1)
 son_avg <- mean(son75)
+num_son <- nrow(son75)
 
 #Average Napa County base pay over $25k
 napa_c$basepay = tolower(napa_c$Base.Pay)
@@ -92,6 +93,7 @@ napa75 <- napa_c$basepay[napa_c$Base.Pay >25000]
 napa75 <- as.numeric(napa75)
 napa75 <- matrix(data = napa75, ncol=1)
 napa_avg <- mean(napa75)
+num_napa <- nrow(napa75)
 
 #Average Solano County base pay over $25k
 solano_c$basepay = tolower(solano_c$Base.Pay)
@@ -99,6 +101,7 @@ solano75 <- solano_c$basepay[solano_c$Base.Pay >25000]
 solano75 <- as.numeric(solano75)
 solano75 <- matrix(data = solano75, ncol = 1)
 solano_avg <- mean(solano75)
+num_solano <- nrow(solano75
 
 #Average Marin base pay over $25k
 marin_c$basepay = tolower(marin_c$Base.Pay)
@@ -106,6 +109,7 @@ marin75 <- marin_c$basepay[marin_c$Base.Pay > 25000]
 marin75 <- as.numeric(marin75)
 marin75 <- matrix(data = marin75, ncol = 1)
 marin_avg <- mean(marin75)
+num_marin <- nrow(marin75)
 
 #Average Contra Costa County base pay over $25k
 contra_costa_c$basepay = tolower(contra_costa_c$Base.Pay)
@@ -113,6 +117,7 @@ cc75 <- contra_costa_c$basepay[contra_costa_c$Base.Pay > 25000]
 cc75 <- as.numeric(cc75)
 cc75 <- matrix(data = cc75, ncol = 1)
 cc_avg <- mean(cc75)
+num_cc <- nrow(cc75)
 
 #Average San Francisco County base pay over $25k
 san_fran_c$basepay = tolower(san_fran_c$Base.Pay)
@@ -120,6 +125,7 @@ sf75 <- san_fran_c$basepay[san_fran_c$Base.Pay > 25000]
 sf75 <- as.numeric(sf75)
 sf75 <- matrix(data = sf75, ncol = 1)
 sf_avg <- mean(sf75)
+num_sf <- nrow(sf75)
 
 #Average San Mateo County base pay over $25k
 san_mateo_c$basepay = tolower(san_mateo_c$Base.Pay)
@@ -127,6 +133,7 @@ san_mateo75 <- san_mateo_c$basepay[san_mateo_c$Base.Pay > 25000]
 san_mateo75 <- as.numeric(san_mateo75)
 san_mateo75 <- matrix(data = san_mateo75, ncol = 1)
 san_mateo_avg <- mean(san_mateo75)
+num_mateo <- nrow(san_mateo75)
 
 #Average Santa Cruz County base pay over $25k
 santa_cruz_c$basepay = tolower(santa_cruz_c$Base.Pay)
@@ -134,6 +141,7 @@ cruz75 <- santa_cruz_c$basepay[santa_cruz_c$Base.Pay > 25000]
 cruz75 <- as.numeric(cruz75)
 cruz75 <- matrix(data = cruz75, ncol = 1)
 cruz_avg <- mean(cruz75)
+num_cruz <- nrow(cruz75)
 
 #Average Santa Clara County base pay over $25k
 santa_clara_c$basepay = tolower(santa_clara_c$Base.Pay)
@@ -141,6 +149,7 @@ clara75 <- santa_clara_c$basepay[santa_clara_c$Base.Pay >25000]
 clara75 <- as.numeric(clara75)
 clara75 <- matrix(data = clara75, ncol = 1)
 clara_avg <- mean(clara75)
+num_clara <- nrow(clara75)
 
 #Average Alameda County base pay over $25k
 alameda_c$basepay = tolower(alameda_c$Base.Pay)
@@ -148,6 +157,7 @@ alameda75 <- alameda_c$basepay[alameda_c$Base.Pay > 25000]
 alameda75 <- as.numeric(alameda75)
 alameda75 <- matrix(data = alameda75, ncol = 1)
 alameda_avg <- mean(alameda75)
+num_alam <- nrow(alameda75)
 
 son_avg
 napa_avg
