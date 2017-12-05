@@ -1,0 +1,72 @@
+#Create graph to see how much Benefits/Base Pay contribute to Total Pay (plus benefits) in each county
+ben_son <- mean(sonoma_c$Benefits)
+base_son <-mean(sonoma_c$Base.Pay)
+total_son <- mean(sonoma_c$Total.Pay...Benefits)
+
+ben_napa <- mean(napa_c$Benefits)
+base_napa <- mean(napa_c$Base.Pay)
+total_napa <- mean(napa_c$Total.Pay...Benefits)
+
+ben_sol <- mean(solano_c$Benefits)
+base_sol <- mean(solano_c$Base.Pay)
+total_sol <- mean(solano_c$Total.Pay...Benefits)
+
+ben_marin <- mean(marin_c$Benefits)
+base_marin <- mean(marin_c$Base.Pay)
+total_marin <- mean(marin_c$Total.Pay...Benefits)
+
+ben_cc <- mean(contra_costa_c$Benefits)
+base_cc <- mean(contra_costa_c$Base.Pay)
+total_cc <- mean(contra_costa_c$Total.Pay...Benefits)
+
+ben_sf <- as.numeric(san_fran_c$Benefits)
+ben_sf <- mean(ben_sf)
+base_sf <- as.numeric(san_fran_c$Base.Pay)
+base_sf <- mean(base_sf)
+total_sf <- mean(san_fran_c$Total.Pay...Benefits)
+
+ben_mateo <- mean(san_mateo_c$Benefits)
+base_mateo <- mean(san_mateo_c$Base.Pay)
+total_mateo <- mean(san_mateo_c$Total.Pay...Benefits)
+
+ben_cruz <- mean(santa_cruz_c$Benefits)
+base_cruz <- mean(santa_cruz_c$Base.Pay)
+total_cruz <- mean(santa_cruz_c$Total.Pay...Benefits)
+
+ben_clara <- mean(santa_clara_c$Benefits)
+base_clara <-mean(santa_clara_c$Base.Pay)
+total_clara <- mean(santa_clara_c$Total.Pay...Benefits)
+
+ben_alam <- mean(alameda_c$Benefits)
+base_alam <- mean(alameda_c$Base.Pay)
+total_alam <- mean(alameda_c$Total.Pay...Benefits)
+
+benefit_df <- as.data.frame(c(ben_son, ben_napa, ben_sol, ben_marin, ben_cc, ben_sf, ben_mateo, ben_cruz, ben_clara, ben_alam))
+base_df <- as.data.frame(c(base_son, base_napa, base_sol, base_marin, base_cc, base_sf, base_mateo, base_cruz, base_clara, base_alam))
+total_df <- as.data.frame(c(total_son, total_napa, total_sol, total_marin, total_cc, total_sf, total_mateo, total_cruz, total_clara, total_alam))
+pays_tog <- as.data.frame(c(city_names, base_df, benefit_df, total_df))
+colnames(pays_tog) <- c("County.Name", "Base.Pay", "Benefits", "Total.Pay")
+pays_tog <- pays_tog[, -c(5:7)]
+
+pays_tog <- pays_tog[order(pays_tog$Total.Pay),]
+
+p <- plot_ly(pays_tog, x = ~Benefits, y = ~County.Name, name = "Benefits" , type = 'scatter',
+             mode = "markers", marker = list(color = "green"),
+             hoverinfo = 'text',
+             text = ~paste('Avg. Benefits: $', Benefits)) %>%
+  add_trace(x = ~Base.Pay, y = ~County.Name, name = "Base Pay", type = 'scatter',
+            mode = "markers", marker = list(color = "blue"),
+            hoverinfo = 'text',
+            text = ~paste('Avg. Base Pay: $', Base.Pay)) %>%
+  add_trace(x = ~Total.Pay, y = ~County.Name, name = "Total Pay", type = 'scatter',
+            mode = "markers", marker = list(color = "purple"),
+            hoverinfo = 'text',
+            text = ~paste('Avg. Total Pay: $', Total.Pay)) %>%
+  layout(
+    title = "Benefits, Base Pay, and Total Pay in Bay Area Counties",
+    xaxis = list(title = "Average Pay"),
+    yaxis = list(title = "County Name"),
+    margin(list(l = 120))
+  )
+  
+p
