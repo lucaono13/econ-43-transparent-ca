@@ -21,6 +21,7 @@ rm(list = ls())
 #install.packages("dplyr")
 #install.packages("reshape")
 #install.packages("ggrepel")
+install.packages("noncensus")
 
 
 
@@ -46,6 +47,7 @@ library(ggmap)
 library(reshape2)
 library(reshape)
 library(ggrepel)
+library(noncensus)
 
 
 # turn off scientific notation except for big numbers
@@ -170,16 +172,30 @@ cruz_avg
 clara_avg
 alameda_avg
 
+data(counties)
+counties
+sonoma_pop <-subset(counties, state == "CA" & county_name == "Sonoma County", select = c(county_name, population))
+napa_pop <- subset(counties, state == "CA" & county_name == "Napa County", select = c(county_name, population))
+solano_pop <-subset(counties, state == "CA" & county_name == "Solano County", select = c(county_name, population))
+marin_pop <- subset(counties, state =="CA" & county_name == "Marin County", select = c(county_name, population))
+cc_pop <- subset(counties, state =="CA" & county_name == "Contra Costa County", select = c(county_name, population))
+sf_pop <- subset(counties, state == "CA" & county_name=="San Francisco County", select = c(county_name, population))
+mateo_pop <- subset(counties, state == "CA" & county_name == "San Mateo County", select = c(county_name, population))
+cruz_pop <- subset(counties, state =="CA" & county_name == "Santa Cruz County", select = c(county_name, population))
+clara_pop <- subset(counties, state =="CA" & county_name == "Santa Clara County", select = c(county_name, population))
+alam_pop <- subset(counties, state == "CA" & county_name == "Alameda County", select = c(county_name, population))
+
 cities <- c("Sonoma","Napa", "Solano", "Marin", "Contra Costa", "San Francisco", "San Mateo", "Santa Cruz","Santa Clara","Alameda")
 geocode(cities)
 
 #Inserts values into separate Data Frames (each data frame is one column)
-city_avg <- as.data.frame(c(son_avg, napa_avg, solano_avg, marin_avg, cc_avg, sf_avg, san_mateo_avg, cruz_avg, clara_avg, alameda_avg))
+city_rats <- c(num_son/sonoma_pop$population, num_napa/napa_pop$population, num_solano/solano_pop$population, num_marin/marin_pop$population, num_cc/cc_pop$population, num_sf/sf_pop$population, num_mateo/mateo_pop$population, num_cruz/cruz_pop$population, num_clara/clara_pop$population, num_alam/alam_pop$population)
+city_rats <- as.data.frame(city_rats)
 city_names <- as.data.frame(cities)
 city_locs <- as.data.frame(geocode(cities))
 
 #Merge data frames horizontally
-all_together <- as.data.frame(c(city_names, city_avg, city_locs))
+all_together <- as.data.frame(c(city_names, city_rats, city_locs))
 
 #Rename the columns
 colnames(all_together) <- c("CityName", "AveragePay", "Longitude", "Latitude")
